@@ -1,6 +1,7 @@
 package driver
 
 import "database/sql"
+import _ "github.com/jackc/pgx/v5/stdlib"
 
 // NewDB returns a new *sql.DB instance to operate the database.
 func NewDB(dsn string) (*sql.DB, error) {
