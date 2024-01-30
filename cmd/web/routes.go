@@ -10,6 +10,7 @@ func NewRouter() http.Handler {
 
 	router := chi.NewRouter()
 	router.Get("/", handlers.HelloWorldHandler)
+	router.Get("/users/getById/{id}", handlers.GetUserByIdHandler)
 
 	return router
 }

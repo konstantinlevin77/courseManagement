@@ -1,5 +1,7 @@
 package repository
 
+import "github.com/konstantinlevin77/courseManagement/internal/models"
+
 type DatabaseRepo interface {
-	Test() bool
+	GetStudentById(studentId int) (models.Student, error)
 }
