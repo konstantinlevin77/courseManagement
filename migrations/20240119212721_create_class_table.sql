@@ -6,8 +6,8 @@ CREATE TABLE public."class" (
                                 "name" varchar NOT NULL,
                                 "date" date NOT NULL,
                                 description text NOT NULL,
-                                created_at time NOT NULL,
-                                updated_at time NOT NULL,
+                                created_at timestamp NOT NULL,
+                                updated_at timestamp NOT NULL,
                                 CONSTRAINT class_pk PRIMARY KEY (id)
 );
 -- +goose StatementEnd
