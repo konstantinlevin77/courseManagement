@@ -11,6 +11,7 @@ func NewRouter() http.Handler {
 	router := chi.NewRouter()
 	router.Get("/students/getById/{id}", handlers.GetStudentByIdHandler)
 	router.Get("/courses/getById/{id}", handlers.GetCourseByIdHandler)
+	router.Get("/courses/getByStudentId/{id}", handlers.GetCoursesByStudentIdHandler)
 
 	return router
 }

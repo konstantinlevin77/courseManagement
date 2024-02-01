@@ -12,6 +12,7 @@ type PostgresRepo struct {
 	DB *sql.DB
 }
 
+// GetCourseById returns the course whose id is passed as an argument.
 func (pr *PostgresRepo) GetCourseById(courseId int) (models.Course, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
@@ -36,6 +37,7 @@ func (pr *PostgresRepo) GetCourseById(courseId int) (models.Course, error) {
 
 }
 
+// GetStudentById returns the student whose id is passed as an argument.
 func (pr *PostgresRepo) GetStudentById(studentId int) (models.Student, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
@@ -59,6 +61,44 @@ func (pr *PostgresRepo) GetStudentById(studentId int) (models.Student, error) {
 	)
 
 	return student, err
+
+}
+
+// GetCoursesByStudentId returns the courses that the student whose id is passed as an argument have access.
+func (pr *PostgresRepo) GetCoursesByStudentId(studentId int) ([]models.Course, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	query := `SELECT course_id FROM student_access WHERE student_id=$1`
+
+	var courses []models.Course
+
+	// Execute the query.
+	rows, err := pr.DB.QueryContext(ctx, query, studentId)
+	if err != nil {
+		return courses, err
+	}
+
+	// Iterate through rows and add find corresponding courses by the next id.
+	for rows.Next() {
+		var nextId int
+		err := rows.Scan(&nextId)
+		if err != nil {
+			continue
+			// TODO: Error handling is missing.
+		}
+
+		c, err := pr.GetCourseById(nextId)
+		if err != nil {
+			continue
+			// TODO: Error handling is missing.
+		}
+
+		courses = append(courses, c)
+	}
+	
+	return courses, nil
 
 }
 

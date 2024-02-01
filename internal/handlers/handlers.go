@@ -74,3 +74,36 @@ func GetCourseByIdHandler(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(courseJSON)
 
 }
+
+// GetCoursesByStudentIdHandler is the responding handler function for the endpoint /courses/getByStudentId/{id}, it writes
+// out the courses which the student whose id is passed has access.
+func GetCoursesByStudentIdHandler(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		log.Println("An error happened while getting URLParam")
+		log.Println()
+		_, _ = w.Write([]byte("{}"))
+		return
+	}
+
+	courses, err := config.App.Repo.GetCoursesByStudentId(id)
+	if err != nil {
+		log.Println("An error happened while getting from DB ")
+		log.Println(err)
+		_, _ = w.Write([]byte("{}"))
+		return
+	}
+
+	// RETURN STUDENT JSON
+	coursesJSON, err := json.MarshalIndent(courses, "", "  ")
+	if err != nil {
+		_, _ = w.Write([]byte("{}"))
+		return
+	}
+
+	_, _ = w.Write(coursesJSON)
+
+}
