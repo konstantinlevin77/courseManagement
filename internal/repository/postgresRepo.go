@@ -97,9 +97,40 @@ func (pr *PostgresRepo) GetCoursesByStudentId(studentId int) ([]models.Course, e
 
 		courses = append(courses, c)
 	}
-	
+
 	return courses, nil
 
+}
+
+// GetClassesByCourseId returns classes that belong to the course whose id is passed as an argument.
+func (pr *PostgresRepo) GetClassesByCourseId(courseId int) ([]models.Class, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	var classes []models.Class
+
+	query := `SELECT id,name,date,description,created_at,updated_at FROM class WHERE course_id=$1`
+
+	rows, err := pr.DB.QueryContext(ctx, query, courseId)
+	if err != nil {
+		return classes, err
+	}
+
+	for rows.Next() {
+
+		var class models.Class
+		class.CourseId = courseId
+		err = rows.Scan(&class.Id, &class.Name, &class.Date, &class.Description, &class.CreatedAt, &class.UpdatedAt)
+		if err != nil {
+			continue
+			// TODO: Error handling is missing.
+		}
+
+		classes = append(classes, class)
+
+	}
+	return classes, nil
 }
 
 func NewPostgresRepo(dsn string) (PostgresRepo, error) {
