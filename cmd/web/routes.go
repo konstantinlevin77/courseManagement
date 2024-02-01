@@ -9,8 +9,8 @@ import (
 func NewRouter() http.Handler {
 
 	router := chi.NewRouter()
-	router.Get("/", handlers.HelloWorldHandler)
-	router.Get("/users/getById/{id}", handlers.GetUserByIdHandler)
+	router.Get("/students/getById/{id}", handlers.GetStudentByIdHandler)
+	router.Get("/courses/getById/{id}", handlers.GetCourseByIdHandler)
 
 	return router
 }

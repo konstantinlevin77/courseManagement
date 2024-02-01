@@ -12,6 +12,30 @@ type PostgresRepo struct {
 	DB *sql.DB
 }
 
+func (pr *PostgresRepo) GetCourseById(courseId int) (models.Course, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	query := `SELECT name,description,created_at,updated_at
+              FROM course 
+			  WHERE id=$1`
+
+	row := pr.DB.QueryRowContext(ctx, query, courseId)
+
+	var course models.Course
+	course.Id = courseId
+
+	err := row.Scan(&course.Name,
+		&course.Description,
+		&course.CreatedAt,
+		&course.UpdatedAt,
+	)
+
+	return course, err
+
+}
+
 func (pr *PostgresRepo) GetStudentById(studentId int) (models.Student, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
